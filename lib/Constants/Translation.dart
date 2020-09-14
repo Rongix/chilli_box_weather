@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -23,7 +26,7 @@ class TranslationsDelegate extends LocalizationsDelegate<Translations> {
 
   @override
   Future<Translations> load(Locale locale) =>
-      SynchronousFuture<Translations>(Translations(locale: locale));
+      Translations.fromFile(locale: locale);
 
   @override
   bool shouldReload(covariant LocalizationsDelegate<Translations> old) => false;
@@ -33,27 +36,27 @@ class TranslationsDelegate extends LocalizationsDelegate<Translations> {
 class Translations {
   final Locale locale;
 
-  Translations({@required this.locale});
+  final Map<String, String> _localizedStrings;
+
+  static Future<Translations> fromFile({@required Locale locale}) async {
+    var content =
+        await rootBundle.loadString('Translation/${locale.languageCode}.json');
+    Map<String, dynamic> json = jsonDecode(content);
+    var translation =
+        json.map<String, String>((key, value) => MapEntry(key, value));
+    return Translations(locale: locale, localizedStrings: translation);
+  }
+
+  Translations({@required this.locale, @required localizedStrings})
+      : _localizedStrings = localizedStrings;
 
   static Translations of(BuildContext context) {
     return Localizations.of<Translations>(context, Translations);
   }
 
-  static Map<String, Map<String, String>> _localizedStrings = {
-    // English translation is default one
-    'en': {
-      'test': 'This is a test text',
-    },
-    // Polish translation
-    'pl': {
-      'test': 'To jest tekst przykładowy',
-    },
-  };
-
   // If Locale is not supported, then English translation will be returned
   String _resolveTranslation(String key) {
-    return _localizedStrings[locale.languageCode][key] ??
-        _localizedStrings["en"][key];
+    return _localizedStrings[key] ?? "Error: Tr404";
   }
 
   String get test => _resolveTranslation("test");

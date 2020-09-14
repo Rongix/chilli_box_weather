@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:weatherApp/Constants/Translations.dart' as tr;
+import 'package:weatherApp/Constants/Translation.dart' as tr;
 
 class AppAndroid extends StatelessWidget {
   @override
