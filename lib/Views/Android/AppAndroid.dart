@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:weatherApp/Constants/Translation.dart' as tr;
+import 'package:weatherApp/Providers/WeatherProvider.dart';
 
 class AppAndroid extends StatelessWidget {
   @override
@@ -23,10 +24,34 @@ class HomeAndroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(),
-        body: Center(
-          child: Text(tr.Translations.of(context).test),
-        ));
+    return SafeArea(
+      child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+              OpenWeatherApi.getWeather(
+                  cityName: "Zabrze",
+                  countryCode: "pl",
+                  lat: null,
+                  lon: null,
+                  type: OpenWeatherApiForecastType.oneCall);
+            },
+          ),
+          body: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Text('asdasd'),
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(tr.Translations.of(context).test),
+                  ),
+                ],
+              ),
+            ],
+          )),
+    );
   }
 }

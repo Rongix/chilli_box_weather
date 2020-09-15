@@ -31,6 +31,8 @@ dependencies:
   material_design_icons_flutter: ^4.0.5555
 
   provider: ^4.3.2+2
+  http: ^0.12.2
+  
 
 dev_dependencies:
   flutter_test:
