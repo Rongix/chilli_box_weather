@@ -20,9 +20,10 @@ var providersList = <SingleChildWidget>[
 void main() {
   if (Platform.isAndroid) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.transparent, // navigation bar color
-        statusBarColor: Colors.transparent // status bar color
-        ));
+      systemNavigationBarColor: Colors.transparent, // navigation bar color
+      statusBarColor: Colors.blue,
+      // status bar color
+    ));
     runApp(MultiProvider(providers: providersList, child: AppAndroid()));
   } else if (Platform.isIOS) {
     runApp(MultiProvider(providers: providersList, child: AppiOS()));

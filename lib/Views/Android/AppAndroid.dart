@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:weatherApp/Constants/Translation.dart' as tr;
-import 'package:weatherApp/Providers/WeatherProvider.dart';
+import 'package:weatherApp/Models/OpenWeather.dart';
 
 class AppAndroid extends StatelessWidget {
   @override
@@ -29,12 +30,10 @@ class HomeAndroid extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
             onPressed: () {
-              OpenWeatherApi.getWeather(
-                  cityName: "Zabrze",
-                  countryCode: "pl",
-                  lat: null,
-                  lon: null,
-                  type: OpenWeatherApiForecastType.oneCall);
+              OpenWeatherApi.oneCall(
+                  lat: 50.30,
+                  lon: 18.7,
+                  locale: Localizations.localeOf(context));
             },
           ),
           body: Column(
