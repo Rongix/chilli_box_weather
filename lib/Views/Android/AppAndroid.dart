@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:weatherApp/Constants/Translation.dart' as tr;
 import 'package:weatherApp/Models/OpenWeather.dart';
@@ -36,17 +35,39 @@ class HomeAndroid extends StatelessWidget {
                   locale: Localizations.localeOf(context));
             },
           ),
-          body: Column(
-            mainAxisSize: MainAxisSize.max,
+          body: Stack(
             children: [
-              Text('asdasd'),
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child: Text(tr.Translations.of(context).test),
+              Container(
+                height: double.infinity,
+                width: double.infinity,
+                color: Colors.brown[800],
+              ),
+              CustomScrollView(
+                physics: BouncingScrollPhysics(),
+                slivers: [
+                  SliverAppBar(
+                    backgroundColor: Colors.blue,
+                    floating: false,
+                    title: Text("Zabrze"),
+                    flexibleSpace: Container(
+                      color: Colors.blue,
+                      height: 300,
+                    ),
+                    expandedHeight: 300,
                   ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        (context, index) => widgetList[index],
+                        // Container(
+                        //       height: 100,
+                        //       decoration: BoxDecoration(
+                        //         gradient: LinearGradient(
+                        //             colors: [Colors.orange, Colors.lightBlue],
+                        //             transform: GradientRotation(90)),
+                        //       ),
+                        //     ),
+                        childCount: widgetList.length),
+                  )
                 ],
               ),
             ],
@@ -54,3 +75,23 @@ class HomeAndroid extends StatelessWidget {
     );
   }
 }
+
+var widgetList = [
+  Container(
+    height: 300,
+    color: Colors.orange,
+    child: Text("Alamakota"),
+  ),
+  Container(
+    height: 200,
+    color: Colors.pink,
+    child: Row(
+      children: [CircularProgressIndicator()],
+    ),
+  ),
+  Container(
+    height: 300,
+    color: Colors.purple,
+    child: Text("Alaniemakota"),
+  ),
+];
