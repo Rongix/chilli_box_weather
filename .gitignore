@@ -32,7 +32,7 @@
 /build/
 
 # API keys
-lib/Constants/ApiKeys.dart
+lib/Constants/api_keys.dart
 
 # Web related
 lib/generated_plugin_registrant.dart

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-import 'package:weatherApp/Constants/ApiKeys.dart' as apiKeys;
+import 'package:weatherApp/Constants/api_keys.dart' as apiKeys;
 
 // Generate code with: flutter pub run build_runner build
 part 'OpenWeather.g.dart';

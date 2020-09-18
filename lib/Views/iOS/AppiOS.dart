@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:weatherApp/Constants/Translation.dart' as tr;
+import 'package:weatherApp/Constants/translation.dart' as tr;
 
 class AppiOS extends StatelessWidget {
   const AppiOS({Key key}) : super(key: key);

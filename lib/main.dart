@@ -8,7 +8,7 @@ import 'package:provider/single_child_widget.dart';
 
 import 'Providers/WeatherProvider.dart';
 
-import 'Views/Android/AppAndroid.dart';
+import 'Views/Android/app_android.dart';
 import 'Views/iOS/AppiOS.dart';
 
 var providersList = <SingleChildWidget>[
