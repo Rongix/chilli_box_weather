@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:infinity_ui/infinity_ui.dart';
 
 import 'package:weatherApp/Constants/Translation.dart' as tr;
 import 'package:weatherApp/Models/OpenWeather.dart';
@@ -24,9 +25,11 @@ class HomeAndroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          floatingActionButton: FloatingActionButton(
+    return Scaffold(
+        backgroundColor: Colors.black,
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(bottom: InfinityUi.navigationBarHeight),
+          child: FloatingActionButton(
             child: Icon(Icons.add),
             onPressed: () {
               OpenWeatherApi.oneCall(
@@ -35,19 +38,18 @@ class HomeAndroid extends StatelessWidget {
                   locale: Localizations.localeOf(context));
             },
           ),
-          body: Stack(
-            children: [
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                color: Colors.brown[800],
-              ),
-              CustomScrollView(
+        ),
+        body: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: InfinityUi.statusBarHeight),
+              child: CustomScrollView(
                 physics: BouncingScrollPhysics(),
                 slivers: [
                   SliverAppBar(
                     backgroundColor: Colors.blue,
-                    floating: false,
+                    floating: true,
+                    pinned: true,
                     title: Text("Zabrze"),
                     flexibleSpace: Container(
                       color: Colors.blue,
@@ -70,28 +72,28 @@ class HomeAndroid extends StatelessWidget {
                   )
                 ],
               ),
-            ],
-          )),
-    );
+            ),
+          ],
+        ));
   }
 }
 
 var widgetList = [
   Container(
     height: 300,
-    color: Colors.orange,
+    color: Colors.blue[400],
     child: Text("Alamakota"),
   ),
   Container(
     height: 200,
-    color: Colors.pink,
+    color: Colors.blue[600],
     child: Row(
       children: [CircularProgressIndicator()],
     ),
   ),
   Container(
     height: 300,
-    color: Colors.purple,
+    color: Colors.blue[800],
     child: Text("Alaniemakota"),
   ),
 ];
