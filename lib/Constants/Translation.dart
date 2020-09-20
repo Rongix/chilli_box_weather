@@ -64,4 +64,6 @@ class Translations {
   String get currentLocationDescription =>
       _resolveTranslation("current_location_description");
   String get savedLocations => _resolveTranslation("saved_locations");
+  String get savedLocationsDescription =>
+      _resolveTranslation("saved_locations_description");
 }

@@ -35,6 +35,8 @@ dependencies:
   http: ^0.12.2
   infinity_ui: ^0.2.5
   flutter_native_splash: ^0.1.9
+  geolocator: ^6.0.0
+  geocoding: ^1.0.3+1
 
 dev_dependencies:
   flutter_test:

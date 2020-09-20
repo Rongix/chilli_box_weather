@@ -65,8 +65,9 @@ class OpenWeatherApi {
       @required double lon,
       @required Locale locale}) async {
     Locale supportedLocale;
-    if (openWeatherApiSupportedLocale.contains(locale.countryCode)) {
-      print('setting locale in api');
+    print(locale);
+    if (openWeatherApiSupportedLocale.contains(locale.languageCode)) {
+      print('setting ${locale.languageCode} locale in api');
       supportedLocale = locale;
     } else {
       print('setting en locale in api');

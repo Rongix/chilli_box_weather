@@ -1,4 +1,7 @@
 {
     "test": "To jest tekst przykładowy",
-    "current_location": "Aktualna lokalizacja"
+    "current_location": "Aktualna lokalizacja",
+    "current_location_description": "Pokazuje pogodę na głównym ekranie i widgetach",
+    "saved_locations": "Zapisane miejsca:",
+    "saved_locations_description": "Pozostałe miejsca, które niedawno sprawdziłeś"
 }
