@@ -21,7 +21,7 @@ const double _kDragSizeFactorLimit = 1.5;
 
 // When the scroll ends, the duration of the refresh indicator's animation
 // to the RefreshIndicator's displacement.
-const Duration _kIndicatorSnapDuration = Duration(milliseconds: 150);
+const Duration _kIndicatorSnapDuration = Duration(milliseconds: 200);
 
 // The duration of the ScaleTransition that starts when the refresh action
 // has completed.
@@ -98,7 +98,7 @@ class CustomRefreshIndicator extends StatefulWidget {
   const CustomRefreshIndicator(
       {Key key,
       @required this.child,
-      this.displacement = 40.0,
+      this.displacement = 30.0,
       @required this.onRefresh,
       this.color,
       this.backgroundColor,

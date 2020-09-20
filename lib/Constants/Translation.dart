@@ -56,8 +56,12 @@ class Translations {
 
   // If Locale is not supported, then English translation will be returned
   String _resolveTranslation(String key) {
-    return _localizedStrings[key] ?? "Error: Tr404";
+    return _localizedStrings[key] ?? "Err: Tr404 !$key";
   }
 
   String get test => _resolveTranslation("test");
+  String get currentLocation => _resolveTranslation("current_location");
+  String get currentLocationDescription =>
+      _resolveTranslation("current_location_description");
+  String get savedLocations => _resolveTranslation("saved_locations");
 }
