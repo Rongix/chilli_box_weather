@@ -1,7 +1,7 @@
 {
     "test": "This is a test text",
     "current_location": "Current location:",
-    "current_location_description": "Showing weather info on main screen and widgets",
+    "current_location_description": "Weather in your precise location",
     "saved_locations": "Saved locations:",
     "saved_locations_description": "Places you checked earlier"
 }

@@ -1,13 +1,18 @@
+import 'dart:ui';
+
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/rendering/sliver_persistent_header.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:infinity_ui/infinity_ui.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:skeleton_text/skeleton_text.dart';
 
 import 'package:weatherApp/Constants/translation.dart' as tr;
 import 'package:weatherApp/Models/OpenWeather.dart';
 import 'package:weatherApp/Providers/WeatherProvider.dart';
-import 'package:weatherApp/widgets/custom_circular_refresh_indicator.dart';
+import 'package:weatherApp/Utils/utils.dart';
 
 class AppAndroid extends StatelessWidget {
   @override
@@ -20,7 +25,7 @@ class AppAndroid extends StatelessWidget {
         theme: ThemeData(
           accentColor: Colors.lightBlueAccent,
           accentColorBrightness: Brightness.light,
-          backgroundColor: Colors.lightBlueAccent,
+          backgroundColor: Colors.lightBlue[600],
           canvasColor: Color(0xFF5DACFA),
           brightness: Brightness.light,
           visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -91,8 +96,9 @@ class ExampleContainer extends StatelessWidget {
           child: Text(
         text,
         overflow: TextOverflow.fade,
+        style: TextStyle(color: Colors.white),
       )),
-      height: 250,
+      height: 150,
     );
   }
 }
@@ -103,102 +109,28 @@ class HomeAndroid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var widgetList = [
-      ExampleContainer(
-        color: Theme.of(context).canvasColor,
-        text: "Alabama",
-      ),
-      ExampleContainer(
-        color: Theme.of(context).canvasColor,
-        text: "Obama Weather",
-      ),
-      ExampleContainer(
-        color: Theme.of(context).canvasColor,
-        text: "Obama Weather",
-      ),
-      ExampleContainer(
-        color: Theme.of(context).canvasColor,
-        text: "Obama Weather",
-      ),
+      TodayOverviewWidget(),
     ];
+
+    var locationStyle = Theme.of(context).textTheme.headline6.copyWith(
+        color: calculateContrastColor(
+            Theme.of(context).canvasColor, Colors.black, Colors.white));
+    var descriptionStyle = Theme.of(context).textTheme.caption.copyWith(
+        color: calculateContrastColor(Theme.of(context).canvasColor,
+            Colors.black.withOpacity(0.8), Colors.white.withOpacity(0.8)));
     return Scaffold(
-        drawer: Drawer(
-          child: Material(
-            color: Theme.of(context).backgroundColor,
-            child: ListView(
-              padding: EdgeInsets.only(top: InfinityUi.statusBarHeight + 100),
-              children: [
-                ListTile(
-                  title: Text(
-                    "Weather Box",
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.settings),
-                    onPressed: () {},
-                  ),
-                ),
-                Divider(
-                  height: 20,
-                  thickness: 2,
-                  color: Colors.white.withOpacity(0.1),
-                ),
-                SizedBox(height: 10),
-                // Current location section
-                ListTile(
-                  dense: true,
-                  title: Text(
-                    tr.Translations.of(context).currentLocation,
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                  subtitle: Text(
-                    tr.Translations.of(context).currentLocationDescription,
-                    style: Theme.of(context).textTheme.caption,
-                  ),
-                ),
-                Consumer<WeatherProvider>(
-                  builder: (context, provider, child) => ListTile(
-                      dense: true,
-                      onTap: () {},
-                      title: Text(
-                        provider.available
-                            ? "${provider?.placemarks?.first?.subAdministrativeArea}"
-                            : "404",
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      subtitle: Text(
-                        provider.available
-                            ? "${provider?.placemarks?.first?.isoCountryCode} | ${provider?.placemarks?.first?.subAdministrativeArea} | ${provider?.placemarks?.first?.postalCode}"
-                            : "404",
-                        style: Theme.of(context).textTheme.caption,
-                      )),
-                ),
-                Divider(
-                  height: 20,
-                  thickness: 2,
-                  color: Colors.white.withOpacity(0.1),
-                ),
-                SizedBox(height: 10),
-                // Saved places section
-                ListTile(
-                  dense: true,
-                  title: Text(
-                    tr.Translations.of(context).savedLocations,
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                  subtitle: Text(
-                    tr.Translations.of(context).savedLocationsDescription,
-                    style: Theme.of(context).textTheme.caption,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        drawer: DrawerAndroid(),
         backgroundColor: Theme.of(context).canvasColor,
         floatingActionButton: Padding(
-          padding: EdgeInsets.only(bottom: InfinityUi.navigationBarHeight),
+          padding: EdgeInsets.only(
+              bottom: InfinityUi.navigationBarHeight + 16, right: 16),
           child: FloatingActionButton(
-            child: Icon(MdiIcons.cityVariantOutline),
+            backgroundColor: Theme.of(context).accentColor.withOpacity(0.9),
+            child: Icon(
+              MdiIcons.cityVariantOutline,
+              color: calculateContrastColor(
+                  Theme.of(context).accentColor, Colors.black, Colors.white),
+            ),
             onPressed: () {
               Provider.of<WeatherProvider>(context, listen: false)
                   .updateOpenWeather(
@@ -231,59 +163,50 @@ class HomeAndroid extends StatelessWidget {
                 ),
                 SliverAppBar(
                   title: Consumer<WeatherProvider>(
-                    builder: (context, provider, child) => Text(
-                      provider.available
-                          ? "Lat ${provider.position.latitude.toStringAsFixed(2)}, lon: ${provider.position.longitude.toStringAsFixed(2)}, alt: ${provider.position.altitude.toStringAsFixed(2)}"
-                          : "Yo nigga nowhere",
-                      style: TextStyle(color: Colors.white),
+                    builder: (context, provider, child) => Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            //Converting icon to text
+                            Text(
+                              String.fromCharCode(MdiIcons.mapCheck.codePoint),
+                              style: TextStyle(
+                                  fontFamily: MdiIcons.mapCheck.fontFamily,
+                                  package: MdiIcons.mapCheck.fontPackage),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                                provider.available
+                                    ? "${provider?.placemarks?.first?.subAdministrativeArea}"
+                                    : "404",
+                                style: locationStyle),
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 4),
+                          child: Text(
+                            provider.available
+                                ? "${provider?.placemarks?.first?.isoCountryCode} | ${provider?.placemarks?.first?.administrativeArea} | ${provider?.placemarks?.first?.postalCode}"
+                                : "404",
+                            style: descriptionStyle,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   backgroundColor: Theme.of(context).canvasColor,
                   floating: false,
                   pinned: true,
-                  elevation: 0,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      // decoration: BoxDecoration(
-                      //     gradient: LinearGradient(
-                      //         colors: [Colors.blue[300], Colors.blue[200]],
-                      //         begin: Alignment.bottomCenter,
-                      //         end: Alignment.topCenter)),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15),
-                        child: Consumer<WeatherProvider>(
-                          builder: (context, provider, child) => Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(provider.available
-                                  ? "${(provider.openWeatherResponse.current.temp - 273.15).toStringAsFixed(2)} °C"
-                                  : "Waiting"),
-                              Text(provider.available
-                                  ? "Feels like ${(provider.openWeatherResponse.current.feelsLike - 273.15).toStringAsFixed(2)} °C"
-                                  : "Waiting"),
-                              Text(provider.available
-                                  ? "${provider.openWeatherResponse.current.weather[0].main}"
-                                  : "Waiting"),
-                              Text(provider.available
-                                  ? "${provider.openWeatherResponse.current.weather[0].description}"
-                                  : "Waiting"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    collapseMode: CollapseMode.parallax,
-                    centerTitle: false,
-                  ),
-                  expandedHeight: MediaQuery.of(context).size.height / 3,
                 ),
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: SliverPersistentPadding(
-                      maxExtent: 50,
-                      minExtent: 50,
+                      maxExtent: 20,
+                      minExtent: 20,
                       beginColor:
                           Theme.of(context).canvasColor.withOpacity(0.1),
                       endColor: Theme.of(context).canvasColor),
@@ -314,4 +237,311 @@ class HomeAndroid extends StatelessWidget {
   }
 }
 
-// SLIVER FOOTER
+// DRAWER with locations
+class DrawerAndroid extends StatelessWidget {
+  const DrawerAndroid({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var drawerBackgroundColor = Theme.of(context).backgroundColor;
+    var headingStyle = Theme.of(context).textTheme.headline5.copyWith(
+        color: calculateContrastColor(
+            drawerBackgroundColor, Colors.black, Colors.white));
+    var locationStyle = Theme.of(context).textTheme.headline6.copyWith(
+        color: calculateContrastColor(
+            drawerBackgroundColor, Colors.black, Colors.white));
+    var descriptionStyle = Theme.of(context).textTheme.caption.copyWith(
+        color: calculateContrastColor(drawerBackgroundColor,
+            Colors.black.withOpacity(0.8), Colors.white.withOpacity(0.8)));
+    var iconColor = calculateContrastColor(
+        drawerBackgroundColor, Colors.black, Colors.white);
+    var dividerColor = calculateContrastColor(drawerBackgroundColor,
+        Colors.black.withOpacity(0.3), Colors.white.withOpacity(0.3));
+    var bigHeadingStyle = Theme.of(context)
+        .textTheme
+        .headline5
+        .copyWith(
+            color: calculateContrastColor(
+                drawerBackgroundColor, Colors.black, Colors.white))
+        .copyWith(fontFamily: GoogleFonts.getFont('Rubik Mono One').fontFamily);
+    var dancingStyle = Theme.of(context)
+        .textTheme
+        .subtitle1
+        .copyWith(
+            color: calculateContrastColor(drawerBackgroundColor,
+                Colors.black.withOpacity(0.8), Colors.white.withOpacity(0.8)))
+        .copyWith(fontFamily: GoogleFonts.getFont('Dancing Script').fontFamily);
+
+    return Drawer(
+      child: Material(
+        color: drawerBackgroundColor,
+        child: ListView(
+          padding: EdgeInsets.only(top: InfinityUi.statusBarHeight + 100),
+          children: [
+            ListTile(
+              // cool fonts: Rubik Mono One   Slackey  Spirax   Kumar One
+              // title: Text("Weather Box",
+              //     style: headingStyle.copyWith(
+              //         fontFamily:
+              //             GoogleFonts.getFont('Press Start 2P').fontFamily)),
+              title: RichText(
+                  text: TextSpan(style: bigHeadingStyle, children: [
+                TextSpan(text: "Weather "),
+                TextSpan(
+                  text: "Chilli Box",
+                  style: bigHeadingStyle.copyWith(
+                    color: Colors.yellow[400],
+                  ),
+                ),
+                TextSpan(
+                    text:
+                        "\n\"If you are a chilli pepper, every day is hella hot\"",
+                    style: descriptionStyle),
+              ])),
+              trailing: Padding(
+                padding: const EdgeInsets.only(bottom: 5.0),
+                child: IconButton(
+                  icon: Icon(
+                    MdiIcons.cogs,
+                    color: iconColor,
+                    size: 30,
+                  ),
+                  onPressed: () {},
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            DottedLine(
+              direction: Axis.horizontal,
+              lineThickness: 1,
+              dashColor: dividerColor,
+            ),
+            SizedBox(height: 5),
+            // Current location section
+            ListTile(
+              dense: true,
+              title: Text(
+                tr.Translations.of(context).currentLocation,
+                style: headingStyle,
+              ),
+              subtitle: Text(
+                tr.Translations.of(context).currentLocationDescription,
+                style: descriptionStyle,
+              ),
+            ),
+            // Location Tile
+            Consumer<WeatherProvider>(
+              builder: (context, provider, child) => ListTile(
+                  dense: true,
+                  onTap: () {},
+                  title: Text(
+                    provider.available
+                        ? "${provider?.placemarks?.first?.subAdministrativeArea}"
+                        : "404",
+                    style: locationStyle,
+                  ),
+                  subtitle: Text(
+                    provider.available
+                        ? "${provider?.placemarks?.first?.isoCountryCode} | ${provider?.placemarks?.first?.administrativeArea} | ${provider?.placemarks?.first?.postalCode}"
+                        : "404",
+                    style: descriptionStyle,
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      provider.useGeolocation = !provider.useGeolocation;
+                    },
+                    icon: Icon(
+                      provider.useGeolocation
+                          ? MdiIcons.mapMarker
+                          : MdiIcons.mapMarkerOff,
+                      color: iconColor.withOpacity(0.5),
+                    ),
+                  ),
+                  leading: Checkbox(
+                    activeColor: Theme.of(context).accentColor,
+                    checkColor: iconColor,
+                    onChanged: (bool value) {},
+                    value: true,
+                  )),
+            ),
+            DottedLine(
+              direction: Axis.horizontal,
+              lineThickness: 1,
+              dashColor: dividerColor,
+            ),
+            SizedBox(height: 5),
+            // Saved places section
+            ListTile(
+              dense: true,
+              title: Text(
+                tr.Translations.of(context).savedLocations,
+                style: headingStyle,
+              ),
+              subtitle: Text(
+                tr.Translations.of(context).savedLocationsDescription,
+                style: descriptionStyle,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TodayOverviewWidget extends StatelessWidget {
+  const TodayOverviewWidget({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var drawerBackgroundColor = Theme.of(context).backgroundColor;
+    var headingStyle = Theme.of(context).textTheme.headline5.copyWith(
+        color: calculateContrastColor(
+            drawerBackgroundColor, Colors.black, Colors.white));
+
+    var bigHeadingStyle = Theme.of(context)
+        .textTheme
+        .headline6
+        .copyWith(
+            color: calculateContrastColor(
+                drawerBackgroundColor, Colors.black, Colors.white))
+        .copyWith(fontFamily: GoogleFonts.getFont('Rubik Mono One').fontFamily);
+
+    var locationStyle = Theme.of(context).textTheme.headline6.copyWith(
+        color: calculateContrastColor(
+            drawerBackgroundColor, Colors.black, Colors.white));
+    var descriptionStyle = Theme.of(context).textTheme.caption.copyWith(
+        color: calculateContrastColor(drawerBackgroundColor,
+            Colors.black.withOpacity(0.8), Colors.white.withOpacity(0.8)));
+    var iconColor = calculateContrastColor(
+        drawerBackgroundColor, Colors.black, Colors.white);
+    var dividerColor = calculateContrastColor(drawerBackgroundColor,
+        Colors.black.withOpacity(0.3), Colors.white.withOpacity(0.3));
+
+    return Consumer<WeatherProvider>(
+      builder: (context, provider, child) => Container(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Weather Now",
+                style: bigHeadingStyle,
+              ),
+              Row(
+                children: [
+                  provider.available
+                      ? Icon(
+                          openWeatherIcon(provider
+                              .openWeatherResponse.current.weather.first.icon),
+                          color: Colors.amberAccent,
+                          size: 40,
+                        )
+                      : LoadingShimmer(height: 40, width: 40),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      provider.available
+                          ? Text(
+                              "${provider.openWeatherResponse.current.weather[0].description.capitalize()}",
+                              style: headingStyle,
+                            )
+                          : LoadingShimmer(
+                              height: headingStyle.fontSize, width: 100)
+                      // Text(
+                      //   "[${provider.openWeatherResponse.current.weather[0].main.capitalize()}]",
+                      //   style: descriptionStyle,
+                      // ),
+                    ],
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  provider.available
+                      ? Icon(
+                          MdiIcons.chiliMedium,
+                          color: Colors.yellow[300],
+                          size: 40,
+                        )
+                      : LoadingShimmer(height: 40, width: 40),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  //Temperature
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      provider.available
+                          ? Text(
+                              "${(provider.openWeatherResponse.current.temp - 273.15).toStringAsFixed(1)}",
+                              style: headingStyle,
+                            )
+                          : LoadingShimmer(
+                              height: headingStyle.fontSize, width: 35),
+                      SizedBox(
+                        height: 1,
+                      ),
+                      provider.available
+                          ? Text(
+                              "Feels ${(provider.openWeatherResponse.current.feelsLike - 273.15).toStringAsFixed(1)}",
+                              style: descriptionStyle,
+                            )
+                          : LoadingShimmer(
+                              height: descriptionStyle.fontSize, width: 55),
+                    ],
+                  ),
+                  Icon(
+                    MdiIcons.temperatureCelsius,
+                    color: iconColor.withOpacity(0.9),
+                    size: 40,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              DottedLine(
+                direction: Axis.horizontal,
+                lineThickness: 1,
+                dashColor: dividerColor,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LoadingShimmer extends StatelessWidget {
+  const LoadingShimmer({Key key, @required this.height, @required this.width})
+      : super(key: key);
+  final double height;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(5),
+      child: SkeletonAnimation(
+        child: Container(
+          width: width,
+          height: height,
+          color: Colors.grey[200],
+        ),
+      ),
+    );
+  }
+}

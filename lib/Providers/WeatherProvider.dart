@@ -20,6 +20,7 @@ class WeatherProvider extends ChangeNotifier {
   Position _position;
   bool _available = false;
   List<Placemark> _placemarks;
+  bool _useGeolocation = true;
 
   updateOpenWeather(
       {@required BuildContext context,
@@ -40,8 +41,14 @@ class WeatherProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set useGeolocation(bool state) {
+    _useGeolocation = state;
+    notifyListeners();
+  }
+
   OpenWeatherOneCall get openWeatherResponse => _openWeatherResponse;
   Position get position => _position;
   bool get available => _available;
   List<Placemark> get placemarks => _placemarks;
+  bool get useGeolocation => _useGeolocation;
 }

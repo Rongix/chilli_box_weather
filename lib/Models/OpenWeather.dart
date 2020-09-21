@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:weatherApp/Constants/api_keys.dart' as apiKeys;
 
 // Generate code with: flutter pub run build_runner build
@@ -12,6 +13,20 @@ enum OpenWeatherApiWeatherType {
   weather,
   forecast,
   onecall,
+}
+
+const _stringToIcon = {
+  "01d": MdiIcons.weatherSunny,
+  "01n": MdiIcons.moonWaxingCrescent,
+  "02d": MdiIcons.weatherPartlyCloudy,
+  "03d": MdiIcons.cloud, // Scattered clouds
+  "04d": MdiIcons.cloud, // Broken clouds
+  "09d": MdiIcons.weatherRainy,
+};
+
+IconData openWeatherIcon(String key) {
+  print(key);
+  return _stringToIcon[key] ?? MdiIcons.testTube;
 }
 
 // Default open weather locale is "en"
@@ -83,9 +98,9 @@ class OpenWeatherApi {
         {
           var data = json.decode(response.body);
           var a = OpenWeatherOneCall.fromJson(data);
-          var time = a.current.dt;
-          var timenormal2 = DateTime.fromMillisecondsSinceEpoch(time * 1000);
-          print("milliseconds time: $timenormal2");
+          // var time = a.current.dt;
+          // var timenormal2 = DateTime.fromMillisecondsSinceEpoch(time * 1000);
+          print("${a.current.weather.first.id}");
           return a;
         }
       default:
