@@ -14,8 +14,7 @@ import 'package:flutter/widgets.dart';
 
 const double _kLeadingWidth =
     kToolbarHeight; // So the leading button is square.
-const double _kMaxTitleTextScaleFactor =
-    1.34; // TODO(perc): Add link to Material spec when available, https://github.com/flutter/flutter/issues/58769.
+const double _kMaxTitleTextScaleFactor = 1.34;
 
 // Bottom justify the toolbarHeight child which may overflow the top.
 class _ToolbarContainerLayout extends SingleChildLayoutDelegate {
@@ -43,7 +42,6 @@ class _ToolbarContainerLayout extends SingleChildLayoutDelegate {
       toolbarHeight != oldDelegate.toolbarHeight;
 }
 
-// TODO(eseidel): Toolbar needs to change size based on orientation:
 // https://material.io/design/components/app-bars-top.html#specs
 // Mobile Landscape: 48dp
 // Mobile Portrait: 56dp

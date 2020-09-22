@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
+// ignore: implementation_imports
 import 'package:flutter/src/rendering/sliver_persistent_header.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:infinity_ui/infinity_ui.dart';
@@ -123,7 +124,7 @@ class HomeAndroid extends StatelessWidget {
         backgroundColor: Theme.of(context).canvasColor,
         floatingActionButton: Padding(
           padding: EdgeInsets.only(
-              bottom: InfinityUi.navigationBarHeight + 16, right: 16),
+              bottom: InfinityUi.navigationBarHeight + 16, right: 0),
           child: FloatingActionButton(
             backgroundColor: Theme.of(context).accentColor.withOpacity(0.9),
             child: Icon(
@@ -142,16 +143,22 @@ class HomeAndroid extends StatelessWidget {
           ),
         ),
         body: RefreshIndicator(
-          displacement: 75,
-          strokeWidth: 2,
+          displacement: 30,
+          strokeWidth: 3,
           backgroundColor: Theme.of(context).accentColor,
           color: Colors.white,
           onRefresh: () {
-            return Future.delayed(Duration(milliseconds: 1000));
+            return Provider.of<WeatherProvider>(context, listen: false)
+                .updateOpenWeather(
+                    context: context,
+                    lat: null,
+                    lon: null,
+                    locale: Localizations.localeOf(context));
           },
           child: Stack(children: [
             CustomScrollView(
-              physics: BouncingScrollPhysics(),
+              physics: AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics()),
               slivers: [
                 SliverPersistentHeader(
                   pinned: true,
@@ -276,6 +283,8 @@ class DrawerAndroid extends StatelessWidget {
       child: Material(
         color: drawerBackgroundColor,
         child: ListView(
+          physics:
+              AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
           padding: EdgeInsets.only(top: InfinityUi.statusBarHeight + 100),
           children: [
             ListTile(
@@ -396,28 +405,25 @@ class TodayOverviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var drawerBackgroundColor = Theme.of(context).backgroundColor;
+    var widgetBackground = Theme.of(context).backgroundColor;
     var headingStyle = Theme.of(context).textTheme.headline5.copyWith(
         color: calculateContrastColor(
-            drawerBackgroundColor, Colors.black, Colors.white));
+            widgetBackground, Colors.black, Colors.white));
 
     var bigHeadingStyle = Theme.of(context)
         .textTheme
         .headline6
         .copyWith(
             color: calculateContrastColor(
-                drawerBackgroundColor, Colors.black, Colors.white))
+                widgetBackground, Colors.black, Colors.white))
         .copyWith(fontFamily: GoogleFonts.getFont('Rubik Mono One').fontFamily);
 
-    var locationStyle = Theme.of(context).textTheme.headline6.copyWith(
-        color: calculateContrastColor(
-            drawerBackgroundColor, Colors.black, Colors.white));
     var descriptionStyle = Theme.of(context).textTheme.caption.copyWith(
-        color: calculateContrastColor(drawerBackgroundColor,
+        color: calculateContrastColor(widgetBackground,
             Colors.black.withOpacity(0.8), Colors.white.withOpacity(0.8)));
-    var iconColor = calculateContrastColor(
-        drawerBackgroundColor, Colors.black, Colors.white);
-    var dividerColor = calculateContrastColor(drawerBackgroundColor,
+    var iconColor =
+        calculateContrastColor(widgetBackground, Colors.black, Colors.white);
+    var dividerColor = calculateContrastColor(widgetBackground,
         Colors.black.withOpacity(0.3), Colors.white.withOpacity(0.3));
 
     return Consumer<WeatherProvider>(
@@ -517,10 +523,42 @@ class TodayOverviewWidget extends StatelessWidget {
               SizedBox(
                 height: 15,
               ),
+              WeatherContainer(
+                icon: Icon(Icons.help),
+                displayedData: Text("asdads"),
+                description: Text("asdasdadssdfadfsa"),
+              )
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class WeatherContainer extends StatelessWidget {
+  final Icon icon;
+  final Text displayedData;
+  final Text description;
+
+  WeatherContainer({Key key, this.icon, this.displayedData, this.description})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        icon,
+        SizedBox(width: 10),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            displayedData,
+            ...(description == null ? [] : [SizedBox(height: 2), description]),
+          ],
+        )
+      ],
     );
   }
 }

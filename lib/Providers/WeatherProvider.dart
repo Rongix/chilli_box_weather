@@ -22,7 +22,7 @@ class WeatherProvider extends ChangeNotifier {
   List<Placemark> _placemarks;
   bool _useGeolocation = true;
 
-  updateOpenWeather(
+  Future<void> updateOpenWeather(
       {@required BuildContext context,
       @required double lat,
       @required double lon,
