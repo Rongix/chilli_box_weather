@@ -66,4 +66,9 @@ class Translations {
   String get savedLocations => _resolveTranslation("saved_locations");
   String get savedLocationsDescription =>
       _resolveTranslation("saved_locations_description");
+  String get feelsLike => _resolveTranslation("feels_like");
+  String get weatherOverview => _resolveTranslation("weather_overview");
+  String get weatherNow => _resolveTranslation("weather_now");
+  String get geolocationData => _resolveTranslation("geolocation_data");
+  String get atmosphericData => _resolveTranslation("atmospheric_data");
 }

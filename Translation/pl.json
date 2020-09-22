@@ -3,5 +3,10 @@
     "current_location": "Aktualna lokalizacja",
     "current_location_description": "Pogota w toim miejscu położenia",
     "saved_locations": "Zapisane miejsca:",
-    "saved_locations_description": "Pozostałe miejsca, które niedawno sprawdziłeś"
+    "saved_locations_description": "Pozostałe miejsca, które niedawno sprawdziłeś",
+    "feels_like": "Odczuwalna",
+    "weather_overview": "Przegląd pogody",
+    "weather_now": "Pogoda teraz",
+    "geolocation_data": "Geolokacja",
+    "atmospheric_data": "Atmosfera"
 }

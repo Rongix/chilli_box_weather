@@ -15,6 +15,8 @@ import 'package:weatherApp/Models/OpenWeather.dart';
 import 'package:weatherApp/Providers/WeatherProvider.dart';
 import 'package:weatherApp/Utils/utils.dart';
 
+import "dart:math";
+
 class AppAndroid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -209,36 +211,26 @@ class HomeAndroid extends StatelessWidget {
                   floating: false,
                   pinned: true,
                 ),
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: SliverPersistentPadding(
-                      maxExtent: 20,
-                      minExtent: 20,
-                      beginColor:
-                          Theme.of(context).canvasColor.withOpacity(0.1),
-                      endColor: Theme.of(context).canvasColor),
-                ),
+                // SliverPersistentHeader(
+                //   pinned: true,
+                //   delegate: SliverPersistentPadding(
+                //       maxExtent: 20,
+                //       minExtent: 20,
+                //       beginColor:
+                //           Theme.of(context).canvasColor.withOpacity(0.1),
+                //       endColor: Theme.of(context).canvasColor),
+                // ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                       (context, index) => widgetList[index],
                       childCount: widgetList.length),
                 ),
+                // WeatherGrid(),
+
                 //Hide bottom overlay
               ],
             ),
             // TODO it should be handled in sliver list
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: InfinityUi.statusLSBarHeight,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [
-                  Theme.of(context).canvasColor.withOpacity(0),
-                  Theme.of(context).canvasColor.withOpacity(0.8),
-                  Theme.of(context).canvasColor.withOpacity(1)
-                ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-              ),
-            ),
           ]),
         ));
   }
@@ -405,27 +397,6 @@ class TodayOverviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var widgetBackground = Theme.of(context).backgroundColor;
-    var headingStyle = Theme.of(context).textTheme.headline5.copyWith(
-        color: calculateContrastColor(
-            widgetBackground, Colors.black, Colors.white));
-
-    var bigHeadingStyle = Theme.of(context)
-        .textTheme
-        .headline6
-        .copyWith(
-            color: calculateContrastColor(
-                widgetBackground, Colors.black, Colors.white))
-        .copyWith(fontFamily: GoogleFonts.getFont('Rubik Mono One').fontFamily);
-
-    var descriptionStyle = Theme.of(context).textTheme.caption.copyWith(
-        color: calculateContrastColor(widgetBackground,
-            Colors.black.withOpacity(0.8), Colors.white.withOpacity(0.8)));
-    var iconColor =
-        calculateContrastColor(widgetBackground, Colors.black, Colors.white);
-    var dividerColor = calculateContrastColor(widgetBackground,
-        Colors.black.withOpacity(0.3), Colors.white.withOpacity(0.3));
-
     return Consumer<WeatherProvider>(
       builder: (context, provider, child) => Container(
         child: Padding(
@@ -434,100 +405,249 @@ class TodayOverviewWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Weather Now",
-                style: bigHeadingStyle,
-              ),
-              Row(
-                children: [
-                  provider.available
-                      ? Icon(
-                          openWeatherIcon(provider
-                              .openWeatherResponse.current.weather.first.icon),
-                          color: Colors.amberAccent,
-                          size: 40,
-                        )
-                      : LoadingShimmer(height: 40, width: 40),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      provider.available
-                          ? Text(
-                              "${provider.openWeatherResponse.current.weather[0].description.capitalize()}",
-                              style: headingStyle,
-                            )
-                          : LoadingShimmer(
-                              height: headingStyle.fontSize, width: 100)
-                      // Text(
-                      //   "[${provider.openWeatherResponse.current.weather[0].main.capitalize()}]",
-                      //   style: descriptionStyle,
-                      // ),
-                    ],
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  provider.available
-                      ? Icon(
-                          MdiIcons.chiliMedium,
-                          color: Colors.yellow[300],
-                          size: 40,
-                        )
-                      : LoadingShimmer(height: 40, width: 40),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  //Temperature
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      provider.available
-                          ? Text(
-                              "${(provider.openWeatherResponse.current.temp - 273.15).toStringAsFixed(1)}",
-                              style: headingStyle,
-                            )
-                          : LoadingShimmer(
-                              height: headingStyle.fontSize, width: 35),
-                      SizedBox(
-                        height: 1,
+              WeatherSection(
+                  title: tr.Translations.of(context).weatherOverview,
+                  child: SizedBox()),
+              // Weather Now
+              WeatherSection(
+                title: tr.Translations.of(context).weatherNow,
+                child: provider.available
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          WeatherContainer(
+                            displayedData:
+                                "${provider.openWeatherResponse.current.weather[0].description.capitalize()}",
+                            leadingIcon: Icon(
+                              openWeatherIcon(provider.openWeatherResponse
+                                  .current.weather.first.icon),
+                              color: Colors.amberAccent,
+                              size: 40,
+                            ),
+                          ),
+                          WeatherContainer(
+                            displayedData:
+                                "${(provider.openWeatherResponse.current.temp - 273.15).toStringAsFixed(1)}",
+                            description:
+                                "${tr.Translations.of(context).feelsLike} ${(provider.openWeatherResponse.current.temp - 273.15).toStringAsFixed(1)}",
+                            leadingIcon: Icon(
+                              MdiIcons.chiliMedium,
+                              color: Colors.yellow[300],
+                              size: 40,
+                            ),
+                            trailingIcon: Icon(
+                              MdiIcons.temperatureCelsius,
+                              color: Colors.white.withOpacity(0.9),
+                              size: 40,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          LoadingShimmer(
+                              height: 40,
+                              width:
+                                  MediaQuery.of(context).size.width / 2 - 20),
+                          LoadingShimmer(
+                              height: 40,
+                              width:
+                                  MediaQuery.of(context).size.width / 2 - 20),
+                        ],
                       ),
-                      provider.available
-                          ? Text(
-                              "Feels ${(provider.openWeatherResponse.current.feelsLike - 273.15).toStringAsFixed(1)}",
-                              style: descriptionStyle,
-                            )
-                          : LoadingShimmer(
-                              height: descriptionStyle.fontSize, width: 55),
-                    ],
-                  ),
-                  Icon(
-                    MdiIcons.temperatureCelsius,
-                    color: iconColor.withOpacity(0.9),
-                    size: 40,
-                  ),
-                ],
               ),
-              SizedBox(
-                height: 10,
+              // Geolocation
+              WeatherSection(
+                title: tr.Translations.of(context).geolocationData,
+                child: Column(
+                  children: [
+                    provider.available
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              WeatherContainer(
+                                description: "Longitude",
+                                leadingIcon: Icon(
+                                  MdiIcons.longitude,
+                                  size: 30,
+                                  color: Colors.white.withOpacity(0.5),
+                                ),
+                                displayedData: provider.position.longitude
+                                    .toStringAsFixed(2),
+                              ),
+                              SizedBox(width: 10),
+                              WeatherContainer(
+                                description: "Latitude",
+                                leadingIcon: Icon(
+                                  MdiIcons.latitude,
+                                  size: 30,
+                                  color: Colors.white.withOpacity(0.5),
+                                ),
+                                displayedData: provider.position.latitude
+                                    .toStringAsFixed(2),
+                              ),
+                              SizedBox(width: 10),
+                              WeatherContainer(
+                                description: "Altitude",
+                                leadingIcon: Icon(
+                                  MdiIcons.imageFilterHdr,
+                                  size: 30,
+                                  color: Colors.white.withOpacity(0.5),
+                                ),
+                                displayedData: provider.position.altitude
+                                    .toStringAsFixed(2),
+                              ),
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              LoadingShimmer(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width / 3 -
+                                      20),
+                              LoadingShimmer(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width / 3 -
+                                      20),
+                              LoadingShimmer(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width / 3 -
+                                      20),
+                            ],
+                          ),
+                    SizedBox(height: 10),
+                    // Sunset sunrise
+                    provider.available
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              WeatherContainer(
+                                description: "Sunset",
+                                leadingIcon: Icon(
+                                  MdiIcons.weatherSunsetUp,
+                                  size: 40,
+                                  color: Colors.yellow[200],
+                                ),
+                                displayedData:
+                                    "${DateTime.fromMillisecondsSinceEpoch(provider.openWeatherResponse.current.sunrise * 1000).hour}:${DateTime.fromMillisecondsSinceEpoch(provider.openWeatherResponse.current.sunrise * 1000).minute}",
+                              ),
+                              SizedBox(width: 10),
+                              WeatherContainer(
+                                description: "Sunrise",
+                                leadingIcon: Icon(
+                                  MdiIcons.weatherSunsetDown,
+                                  size: 40,
+                                  color: Colors.yellow[600],
+                                ),
+                                displayedData:
+                                    "${DateTime.fromMillisecondsSinceEpoch(provider.openWeatherResponse.current.sunset * 1000).hour}:${DateTime.fromMillisecondsSinceEpoch(provider.openWeatherResponse.current.sunset * 1000).minute}",
+                              ),
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              LoadingShimmer(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width / 3 -
+                                      20),
+                              LoadingShimmer(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width / 3 -
+                                      20),
+                            ],
+                          ),
+                  ],
+                ),
               ),
-              DottedLine(
-                direction: Axis.horizontal,
-                lineThickness: 1,
-                dashColor: dividerColor,
+              // Atmosphere
+              WeatherSection(
+                title: tr.Translations.of(context).atmosphericData,
+                child: Column(
+                  children: [
+                    provider.available
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              WeatherContainer(
+                                description: "Clouds [%]",
+                                leadingIcon: Icon(
+                                  MdiIcons.cloud,
+                                  size: 30,
+                                  color: Colors.blueGrey[200],
+                                ),
+                                displayedData: provider
+                                    .openWeatherResponse.current.clouds
+                                    .toStringAsFixed(2),
+                              ),
+                              SizedBox(width: 10),
+                              WeatherContainer(
+                                description: "Visibility [m]",
+                                leadingIcon: Icon(
+                                  MdiIcons.telescope,
+                                  size: 30,
+                                  color: Colors.white.withOpacity(0.8),
+                                ),
+                                displayedData: provider
+                                    .openWeatherResponse.current.visibility
+                                    .toStringAsFixed(0),
+                              ),
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              LoadingShimmer(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width / 3 -
+                                      20),
+                              LoadingShimmer(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width / 3 -
+                                      20),
+                              LoadingShimmer(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width / 3 -
+                                      20),
+                            ],
+                          ),
+                    SizedBox(height: 10),
+                    // Sunset sunrise
+                    provider.available
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              WeatherContainer(
+                                description: "Sunset",
+                                leadingIcon: Icon(
+                                  MdiIcons.weatherSunsetUp,
+                                  size: 40,
+                                  color: Colors.yellow[200],
+                                ),
+                                displayedData:
+                                    "${DateTime.fromMillisecondsSinceEpoch(provider.openWeatherResponse.current.sunrise * 1000).hour}:${DateTime.fromMillisecondsSinceEpoch(provider.openWeatherResponse.current.sunrise * 1000).minute}",
+                              ),
+                              SizedBox(width: 10),
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              LoadingShimmer(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width / 3 -
+                                      20),
+                              LoadingShimmer(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width / 3 -
+                                      20),
+                            ],
+                          ),
+                  ],
+                ),
               ),
-              SizedBox(
-                height: 15,
-              ),
-              WeatherContainer(
-                icon: Icon(Icons.help),
-                displayedData: Text("asdads"),
-                description: Text("asdasdadssdfadfsa"),
-              )
             ],
           ),
         ),
@@ -537,27 +657,67 @@ class TodayOverviewWidget extends StatelessWidget {
 }
 
 class WeatherContainer extends StatelessWidget {
-  final Icon icon;
-  final Text displayedData;
-  final Text description;
+  final Icon leadingIcon;
+  final Icon trailingIcon;
+  final String displayedData;
+  final String description;
 
-  WeatherContainer({Key key, this.icon, this.displayedData, this.description})
-      : super(key: key);
+  WeatherContainer({
+    Key key,
+    @required this.leadingIcon,
+    this.trailingIcon,
+    @required this.displayedData,
+    this.description,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var textTheme = Theme.of(context).textTheme;
+    var background = Theme.of(context).canvasColor;
+    var headingStyle = textTheme.headline5.copyWith(
+        color: calculateContrastColor(background, Colors.black, Colors.white));
+    // var bigHeadingStyle = textTheme.headline6
+    //     .copyWith(
+    //         color:
+    //             calculateContrastColor(background, Colors.black, Colors.white))
+    //     .copyWith(fontFamily: GoogleFonts.getFont('Rubik Mono One').fontFamily);
+    var descriptionStyle = textTheme.caption.copyWith(
+        color: calculateContrastColor(background, Colors.black.withOpacity(0.8),
+            Colors.white.withOpacity(0.8)));
+    // var iconColor =
+    //     calculateContrastColor(background, Colors.black, Colors.white);
+    // var dividerColor = calculateContrastColor(background,
+    //     Colors.black.withOpacity(0.3), Colors.white.withOpacity(0.3));
+
     return Row(
       children: [
-        icon,
+        leadingIcon,
         SizedBox(width: 10),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            displayedData,
-            ...(description == null ? [] : [SizedBox(height: 2), description]),
+            Container(
+              child: Text(
+                displayedData,
+                style: headingStyle,
+              ),
+            ),
+            if (description != null) ...[
+              SizedBox(height: 2),
+              Text(
+                description,
+                style: descriptionStyle,
+              ),
+            ],
           ],
-        )
+        ),
+        if (trailingIcon != null) ...[
+          SizedBox(
+            width: 0,
+          ),
+          trailingIcon
+        ],
       ],
     );
   }
@@ -580,6 +740,102 @@ class LoadingShimmer extends StatelessWidget {
           color: Colors.grey[200],
         ),
       ),
+    );
+  }
+}
+
+class WeatherGrid extends StatelessWidget {
+  const WeatherGrid({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return // TESTING GRID
+        SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: MediaQuery.of(context).size.width / 2,
+          mainAxisSpacing: 0,
+          crossAxisSpacing: 0,
+          childAspectRatio: 3.0,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            return WeatherContainer(
+                leadingIcon: Icon(
+                  MdiIcons.weatherSunny,
+                  size: 40,
+                  color: Colors.amber,
+                ),
+                trailingIcon: Random.secure().nextBool()
+                    ? null
+                    : Icon(
+                        MdiIcons.temperatureCelsius,
+                        size: 30,
+                        color: Colors.amber,
+                      ),
+                displayedData: "Clear Sky",
+                description: Random.secure().nextBool() ? "clear" : null);
+          },
+          childCount: 20,
+        ),
+      ),
+    );
+  }
+}
+
+class WeatherSection extends StatelessWidget {
+  final Widget child;
+  final String title;
+  const WeatherSection({
+    Key key,
+    @required this.title,
+    @required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var textTheme = Theme.of(context).textTheme;
+    var background = Theme.of(context).canvasColor;
+
+    var bigHeadingStyle = textTheme.headline6
+        .copyWith(
+            color:
+                calculateContrastColor(background, Colors.black, Colors.white))
+        .copyWith(fontFamily: GoogleFonts.getFont('Rubik Mono One').fontFamily);
+    var dividerColor = calculateContrastColor(background,
+        Colors.black.withOpacity(0.3), Colors.white.withOpacity(0.3));
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text(
+            title,
+            style: bigHeadingStyle,
+          ),
+          Icon(
+            MdiIcons.unfoldMoreHorizontal,
+            color: Colors.white24,
+          ),
+        ]),
+        SizedBox(height: 5),
+        // Container for weather now
+        child,
+
+        SizedBox(
+          height: 10,
+        ),
+        DottedLine(
+          direction: Axis.horizontal,
+          lineThickness: 1,
+          dashColor: dividerColor,
+        ),
+        SizedBox(
+          height: 15,
+        ),
+      ],
     );
   }
 }

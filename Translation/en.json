@@ -3,5 +3,10 @@
     "current_location": "Current location:",
     "current_location_description": "Weather in your precise location",
     "saved_locations": "Saved locations:",
-    "saved_locations_description": "Places you checked earlier"
+    "saved_locations_description": "Places you checked earlier",
+    "feels_like": "Feels like",
+    "weather_overview": "Weather overview",
+    "weather_now": "Weather now",
+    "geolocation_data": "Geolocation",
+    "atmospheric_data": "Atmospheric"
 }
