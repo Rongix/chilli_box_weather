@@ -157,8 +157,8 @@ class OpenWeatherOneCallCurrent {
   final int humidity;
   // Atmospheric temperature (varying according to pressure and humidity)
   // below which water droplets begin to condense and dew can form, Kelvin
-  @JsonKey(name: 'drew_point')
-  final double drewPoint;
+  @JsonKey(name: 'dew_point')
+  final double dewPoint;
   // Midday UV index
   final double uvi;
   // Cloudiness, %
@@ -188,7 +188,7 @@ class OpenWeatherOneCallCurrent {
       this.feelsLike,
       this.pressure,
       this.humidity,
-      this.drewPoint,
+      this.dewPoint,
       this.uvi,
       this.clouds,
       this.visibility,

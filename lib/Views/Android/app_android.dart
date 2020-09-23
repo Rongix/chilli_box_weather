@@ -26,19 +26,27 @@ class AppAndroid extends StatelessWidget {
         supportedLocales: tr.supportedLocales,
         title: 'Photo Print Layout',
         theme: ThemeData(
-          accentColor: Colors.lightBlueAccent,
-          accentColorBrightness: Brightness.light,
-          backgroundColor: Colors.lightBlue[600],
-          canvasColor: Color(0xFF5DACFA),
           brightness: Brightness.light,
+          accentColorBrightness: Brightness.light,
+          accentColor: Colors.lightBlue[300],
+          backgroundColor: Color(0xFF5DACFA),
+          canvasColor: Color(0xFF5DACFA),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
+        // darkTheme: ThemeData(
+        //   brightness: Brightness.dark,
+        //   accentColor: Colors.deepPurpleAccent,
+        //   accentColorBrightness: Brightness.dark,
+        //   backgroundColor: Colors.deepPurple,
+        //   canvasColor: Colors.deepPurple[800],
+        //   visualDensity: VisualDensity.adaptivePlatformDensity,
+        // ),
         darkTheme: ThemeData(
-          accentColor: Colors.deepPurpleAccent,
-          accentColorBrightness: Brightness.dark,
-          backgroundColor: Colors.deepPurple,
-          canvasColor: Colors.deepPurple[800],
           brightness: Brightness.dark,
+          accentColorBrightness: Brightness.dark,
+          accentColor: Colors.grey[800],
+          backgroundColor: Colors.grey[900],
+          canvasColor: Colors.black,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         home: HomeAndroid());
@@ -277,7 +285,7 @@ class DrawerAndroid extends StatelessWidget {
         child: ListView(
           physics:
               AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-          padding: EdgeInsets.only(top: InfinityUi.statusBarHeight + 100),
+          padding: EdgeInsets.only(top: InfinityUi.statusBarHeight + 20),
           children: [
             ListTile(
               // cool fonts: Rubik Mono One   Slackey  Spirax   Kumar One
@@ -311,12 +319,14 @@ class DrawerAndroid extends StatelessWidget {
                 ),
               ),
             ),
+
             SizedBox(
               height: 10,
             ),
             DottedLine(
               direction: Axis.horizontal,
-              lineThickness: 1,
+              lineThickness: 2,
+              dashLength: 2,
               dashColor: dividerColor,
             ),
             SizedBox(height: 5),
@@ -369,7 +379,8 @@ class DrawerAndroid extends StatelessWidget {
             ),
             DottedLine(
               direction: Axis.horizontal,
-              lineThickness: 1,
+              lineThickness: 2,
+              dashLength: 2,
               dashColor: dividerColor,
             ),
             SizedBox(height: 5),
@@ -413,7 +424,7 @@ class TodayOverviewWidget extends StatelessWidget {
                 title: tr.Translations.of(context).weatherNow,
                 child: provider.available
                     ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           WeatherContainer(
                             displayedData:
@@ -422,7 +433,7 @@ class TodayOverviewWidget extends StatelessWidget {
                               openWeatherIcon(provider.openWeatherResponse
                                   .current.weather.first.icon),
                               color: Colors.amberAccent,
-                              size: 40,
+                              size: 30,
                             ),
                           ),
                           WeatherContainer(
@@ -433,12 +444,12 @@ class TodayOverviewWidget extends StatelessWidget {
                             leadingIcon: Icon(
                               MdiIcons.chiliMedium,
                               color: Colors.yellow[300],
-                              size: 40,
+                              size: 30,
                             ),
                             trailingIcon: Icon(
                               MdiIcons.temperatureCelsius,
                               color: Colors.white.withOpacity(0.9),
-                              size: 40,
+                              size: 30,
                             ),
                           ),
                         ],
@@ -464,7 +475,7 @@ class TodayOverviewWidget extends StatelessWidget {
                   children: [
                     provider.available
                         ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               WeatherContainer(
                                 description: "Longitude",
@@ -521,7 +532,7 @@ class TodayOverviewWidget extends StatelessWidget {
                     // Sunset sunrise
                     provider.available
                         ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               WeatherContainer(
                                 description: "Sunset",
@@ -551,11 +562,11 @@ class TodayOverviewWidget extends StatelessWidget {
                             children: [
                               LoadingShimmer(
                                   height: 40,
-                                  width: MediaQuery.of(context).size.width / 3 -
+                                  width: MediaQuery.of(context).size.width / 2 -
                                       20),
                               LoadingShimmer(
                                   height: 40,
-                                  width: MediaQuery.of(context).size.width / 3 -
+                                  width: MediaQuery.of(context).size.width / 2 -
                                       20),
                             ],
                           ),
@@ -569,14 +580,14 @@ class TodayOverviewWidget extends StatelessWidget {
                   children: [
                     provider.available
                         ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               WeatherContainer(
                                 description: "Clouds [%]",
                                 leadingIcon: Icon(
                                   MdiIcons.cloud,
                                   size: 30,
-                                  color: Colors.blueGrey[200],
+                                  color: Colors.blueGrey[100],
                                 ),
                                 displayedData: provider
                                     .openWeatherResponse.current.clouds
@@ -617,19 +628,34 @@ class TodayOverviewWidget extends StatelessWidget {
                     // Sunset sunrise
                     provider.available
                         ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               WeatherContainer(
-                                description: "Sunset",
+                                description: "Humidity [%]",
                                 leadingIcon: Icon(
-                                  MdiIcons.weatherSunsetUp,
-                                  size: 40,
-                                  color: Colors.yellow[200],
+                                  MdiIcons.airHumidifier,
+                                  size: 30,
+                                  color: Colors.blueGrey[50],
                                 ),
                                 displayedData:
-                                    "${DateTime.fromMillisecondsSinceEpoch(provider.openWeatherResponse.current.sunrise * 1000).hour}:${DateTime.fromMillisecondsSinceEpoch(provider.openWeatherResponse.current.sunrise * 1000).minute}",
+                                    "${provider.openWeatherResponse.current.humidity}",
                               ),
                               SizedBox(width: 10),
+                              WeatherContainer(
+                                description: "Dew point",
+                                leadingIcon: Icon(
+                                  MdiIcons.waterAlert,
+                                  size: 30,
+                                  color: Colors.blueGrey[50],
+                                ),
+                                trailingIcon: Icon(
+                                  MdiIcons.temperatureCelsius,
+                                  color: Colors.white.withOpacity(0.9),
+                                  size: 30,
+                                ),
+                                displayedData:
+                                    "${(provider.openWeatherResponse.current.dewPoint - 273.15).toStringAsFixed(1)}",
+                              ),
                             ],
                           )
                         : Row(
@@ -637,11 +663,11 @@ class TodayOverviewWidget extends StatelessWidget {
                             children: [
                               LoadingShimmer(
                                   height: 40,
-                                  width: MediaQuery.of(context).size.width / 3 -
+                                  width: MediaQuery.of(context).size.width / 2 -
                                       20),
                               LoadingShimmer(
                                   height: 40,
-                                  width: MediaQuery.of(context).size.width / 3 -
+                                  width: MediaQuery.of(context).size.width / 2 -
                                       20),
                             ],
                           ),
@@ -676,26 +702,17 @@ class WeatherContainer extends StatelessWidget {
     var background = Theme.of(context).canvasColor;
     var headingStyle = textTheme.headline5.copyWith(
         color: calculateContrastColor(background, Colors.black, Colors.white));
-    // var bigHeadingStyle = textTheme.headline6
-    //     .copyWith(
-    //         color:
-    //             calculateContrastColor(background, Colors.black, Colors.white))
-    //     .copyWith(fontFamily: GoogleFonts.getFont('Rubik Mono One').fontFamily);
     var descriptionStyle = textTheme.caption.copyWith(
         color: calculateContrastColor(background, Colors.black.withOpacity(0.8),
             Colors.white.withOpacity(0.8)));
-    // var iconColor =
-    //     calculateContrastColor(background, Colors.black, Colors.white);
-    // var dividerColor = calculateContrastColor(background,
-    //     Colors.black.withOpacity(0.3), Colors.white.withOpacity(0.3));
 
     return Row(
       children: [
         leadingIcon,
         SizedBox(width: 10),
         Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               child: Text(
@@ -744,45 +761,45 @@ class LoadingShimmer extends StatelessWidget {
   }
 }
 
-class WeatherGrid extends StatelessWidget {
-  const WeatherGrid({Key key}) : super(key: key);
+// class WeatherGrid extends StatelessWidget {
+//   const WeatherGrid({Key key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return // TESTING GRID
-        SliverPadding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      sliver: SliverGrid(
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: MediaQuery.of(context).size.width / 2,
-          mainAxisSpacing: 0,
-          crossAxisSpacing: 0,
-          childAspectRatio: 3.0,
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (BuildContext context, int index) {
-            return WeatherContainer(
-                leadingIcon: Icon(
-                  MdiIcons.weatherSunny,
-                  size: 40,
-                  color: Colors.amber,
-                ),
-                trailingIcon: Random.secure().nextBool()
-                    ? null
-                    : Icon(
-                        MdiIcons.temperatureCelsius,
-                        size: 30,
-                        color: Colors.amber,
-                      ),
-                displayedData: "Clear Sky",
-                description: Random.secure().nextBool() ? "clear" : null);
-          },
-          childCount: 20,
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return // TESTING GRID
+//         SliverPadding(
+//       padding: EdgeInsets.symmetric(horizontal: 16),
+//       sliver: SliverGrid(
+//         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+//           maxCrossAxisExtent: MediaQuery.of(context).size.width / 2,
+//           mainAxisSpacing: 0,
+//           crossAxisSpacing: 0,
+//           childAspectRatio: 3.0,
+//         ),
+//         delegate: SliverChildBuilderDelegate(
+//           (BuildContext context, int index) {
+//             return WeatherContainer(
+//                 leadingIcon: Icon(
+//                   MdiIcons.weatherSunny,
+//                   size: 40,
+//                   color: Colors.amber,
+//                 ),
+//                 trailingIcon: Random.secure().nextBool()
+//                     ? null
+//                     : Icon(
+//                         MdiIcons.temperatureCelsius,
+//                         size: 30,
+//                         color: Colors.amber,
+//                       ),
+//                 displayedData: "Clear Sky",
+//                 description: Random.secure().nextBool() ? "clear" : null);
+//           },
+//           childCount: 20,
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class WeatherSection extends StatelessWidget {
   final Widget child;
@@ -829,7 +846,8 @@ class WeatherSection extends StatelessWidget {
         ),
         DottedLine(
           direction: Axis.horizontal,
-          lineThickness: 1,
+          lineThickness: 2,
+          dashLength: 2,
           dashColor: dividerColor,
         ),
         SizedBox(
