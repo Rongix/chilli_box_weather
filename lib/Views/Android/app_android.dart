@@ -9,6 +9,7 @@ import 'package:infinity_ui/infinity_ui.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:skeleton_text/skeleton_text.dart';
+import 'package:weatherApp/Constants/colors.dart';
 
 import 'package:weatherApp/Constants/translation.dart' as tr;
 import 'package:weatherApp/Models/OpenWeather.dart';
@@ -219,15 +220,7 @@ class HomeAndroid extends StatelessWidget {
                   floating: false,
                   pinned: true,
                 ),
-                // SliverPersistentHeader(
-                //   pinned: true,
-                //   delegate: SliverPersistentPadding(
-                //       maxExtent: 20,
-                //       minExtent: 20,
-                //       beginColor:
-                //           Theme.of(context).canvasColor.withOpacity(0.1),
-                //       endColor: Theme.of(context).canvasColor),
-                // ),
+
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                       (context, index) => widgetList[index],
@@ -238,7 +231,6 @@ class HomeAndroid extends StatelessWidget {
                 //Hide bottom overlay
               ],
             ),
-            // TODO it should be handled in sliver list
           ]),
         ));
   }
@@ -250,69 +242,39 @@ class DrawerAndroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var drawerBackgroundColor = Theme.of(context).backgroundColor;
-    var headingStyle = Theme.of(context).textTheme.headline5.copyWith(
-        color: calculateContrastColor(
-            drawerBackgroundColor, Colors.black, Colors.white));
-    var locationStyle = Theme.of(context).textTheme.headline6.copyWith(
-        color: calculateContrastColor(
-            drawerBackgroundColor, Colors.black, Colors.white));
-    var descriptionStyle = Theme.of(context).textTheme.caption.copyWith(
-        color: calculateContrastColor(drawerBackgroundColor,
-            Colors.black.withOpacity(0.8), Colors.white.withOpacity(0.8)));
-    var iconColor = calculateContrastColor(
-        drawerBackgroundColor, Colors.black, Colors.white);
-    var dividerColor = calculateContrastColor(drawerBackgroundColor,
-        Colors.black.withOpacity(0.3), Colors.white.withOpacity(0.3));
-    var bigHeadingStyle = Theme.of(context)
-        .textTheme
-        .headline5
-        .copyWith(
-            color: calculateContrastColor(
-                drawerBackgroundColor, Colors.black, Colors.white))
-        .copyWith(fontFamily: GoogleFonts.getFont('Rubik Mono One').fontFamily);
-    var dancingStyle = Theme.of(context)
-        .textTheme
-        .subtitle1
-        .copyWith(
-            color: calculateContrastColor(drawerBackgroundColor,
-                Colors.black.withOpacity(0.8), Colors.white.withOpacity(0.8)))
-        .copyWith(fontFamily: GoogleFonts.getFont('Dancing Script').fontFamily);
+    var styleStore = StyleStore(
+        background: Theme.of(context).canvasColor,
+        textTheme: Theme.of(context).textTheme);
 
     return Drawer(
       child: Material(
-        color: drawerBackgroundColor,
+        color: Theme.of(context).backgroundColor,
         child: ListView(
           physics:
               AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
           padding: EdgeInsets.only(top: InfinityUi.statusBarHeight + 20),
           children: [
             ListTile(
-              // cool fonts: Rubik Mono One   Slackey  Spirax   Kumar One
-              // title: Text("Weather Box",
-              //     style: headingStyle.copyWith(
-              //         fontFamily:
-              //             GoogleFonts.getFont('Press Start 2P').fontFamily)),
               title: RichText(
-                  text: TextSpan(style: bigHeadingStyle, children: [
+                  text: TextSpan(style: styleStore.headline1, children: [
                 TextSpan(text: "Weather "),
                 TextSpan(
                   text: "Chilli Box",
-                  style: bigHeadingStyle.copyWith(
+                  style: styleStore.headline1.copyWith(
                     color: Colors.yellow[400],
                   ),
                 ),
                 TextSpan(
                     text:
                         "\n\"If you are a chilli pepper, every day is hella hot\"",
-                    style: descriptionStyle),
+                    style: styleStore.caption),
               ])),
               trailing: Padding(
                 padding: const EdgeInsets.only(bottom: 5.0),
                 child: IconButton(
                   icon: Icon(
                     MdiIcons.cogs,
-                    color: iconColor,
+                    color: styleStore.icon,
                     size: 30,
                   ),
                   onPressed: () {},
@@ -327,7 +289,7 @@ class DrawerAndroid extends StatelessWidget {
               direction: Axis.horizontal,
               lineThickness: 2,
               dashLength: 2,
-              dashColor: dividerColor,
+              dashColor: styleStore.divider,
             ),
             SizedBox(height: 5),
             // Current location section
@@ -335,11 +297,11 @@ class DrawerAndroid extends StatelessWidget {
               dense: true,
               title: Text(
                 tr.Translations.of(context).currentLocation,
-                style: headingStyle,
+                style: styleStore.headline5,
               ),
               subtitle: Text(
                 tr.Translations.of(context).currentLocationDescription,
-                style: descriptionStyle,
+                style: styleStore.caption,
               ),
             ),
             // Location Tile
@@ -351,13 +313,13 @@ class DrawerAndroid extends StatelessWidget {
                     provider.available
                         ? "${provider?.placemarks?.first?.subAdministrativeArea}"
                         : "404",
-                    style: locationStyle,
+                    style: styleStore.headline6,
                   ),
                   subtitle: Text(
                     provider.available
                         ? "${provider?.placemarks?.first?.isoCountryCode} | ${provider?.placemarks?.first?.administrativeArea} | ${provider?.placemarks?.first?.postalCode}"
                         : "404",
-                    style: descriptionStyle,
+                    style: styleStore.caption,
                   ),
                   trailing: IconButton(
                     onPressed: () {
@@ -367,12 +329,12 @@ class DrawerAndroid extends StatelessWidget {
                       provider.useGeolocation
                           ? MdiIcons.mapMarker
                           : MdiIcons.mapMarkerOff,
-                      color: iconColor.withOpacity(0.5),
+                      color: styleStore.icon.withOpacity(0.5),
                     ),
                   ),
                   leading: Checkbox(
                     activeColor: Theme.of(context).accentColor,
-                    checkColor: iconColor,
+                    checkColor: styleStore.icon,
                     onChanged: (bool value) {},
                     value: true,
                   )),
@@ -381,7 +343,7 @@ class DrawerAndroid extends StatelessWidget {
               direction: Axis.horizontal,
               lineThickness: 2,
               dashLength: 2,
-              dashColor: dividerColor,
+              dashColor: styleStore.divider,
             ),
             SizedBox(height: 5),
             // Saved places section
@@ -389,11 +351,11 @@ class DrawerAndroid extends StatelessWidget {
               dense: true,
               title: Text(
                 tr.Translations.of(context).savedLocations,
-                style: headingStyle,
+                style: styleStore.headline5,
               ),
               subtitle: Text(
                 tr.Translations.of(context).savedLocationsDescription,
-                style: descriptionStyle,
+                style: styleStore.caption,
               ),
             ),
           ],
@@ -423,8 +385,8 @@ class TodayOverviewWidget extends StatelessWidget {
               WeatherSection(
                 title: tr.Translations.of(context).weatherNow,
                 child: provider.available
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                    ? Wrap(
+                        direction: Axis.horizontal,
                         children: [
                           WeatherContainer(
                             displayedData:
@@ -583,27 +545,30 @@ class TodayOverviewWidget extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               WeatherContainer(
-                                description: "Clouds [%]",
+                                description: "Clouds",
                                 leadingIcon: Icon(
                                   MdiIcons.cloud,
                                   size: 30,
                                   color: Colors.blueGrey[100],
                                 ),
                                 displayedData: provider
-                                    .openWeatherResponse.current.clouds
-                                    .toStringAsFixed(2),
+                                        .openWeatherResponse.current.clouds
+                                        .toStringAsFixed(0) +
+                                    " %",
                               ),
                               SizedBox(width: 10),
                               WeatherContainer(
-                                description: "Visibility [m]",
+                                description: "Visibility",
                                 leadingIcon: Icon(
                                   MdiIcons.telescope,
                                   size: 30,
                                   color: Colors.white.withOpacity(0.8),
                                 ),
-                                displayedData: provider
-                                    .openWeatherResponse.current.visibility
-                                    .toStringAsFixed(0),
+                                displayedData: (provider.openWeatherResponse
+                                                .current.visibility /
+                                            1000)
+                                        .toStringAsFixed(0) +
+                                    " km",
                               ),
                             ],
                           )
@@ -631,30 +596,25 @@ class TodayOverviewWidget extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               WeatherContainer(
-                                description: "Humidity [%]",
+                                description: "Humidity",
                                 leadingIcon: Icon(
-                                  MdiIcons.airHumidifier,
+                                  MdiIcons.waterPercent,
                                   size: 30,
                                   color: Colors.blueGrey[50],
                                 ),
                                 displayedData:
-                                    "${provider.openWeatherResponse.current.humidity}",
+                                    "${provider.openWeatherResponse.current.humidity} %",
                               ),
                               SizedBox(width: 10),
                               WeatherContainer(
                                 description: "Dew point",
                                 leadingIcon: Icon(
-                                  MdiIcons.waterAlert,
+                                  MdiIcons.waterPlus,
                                   size: 30,
                                   color: Colors.blueGrey[50],
                                 ),
-                                trailingIcon: Icon(
-                                  MdiIcons.temperatureCelsius,
-                                  color: Colors.white.withOpacity(0.9),
-                                  size: 30,
-                                ),
                                 displayedData:
-                                    "${(provider.openWeatherResponse.current.dewPoint - 273.15).toStringAsFixed(1)}",
+                                    "${(provider.openWeatherResponse.current.dewPoint - 273.15).toStringAsFixed(1)} C",
                               ),
                             ],
                           )
@@ -707,14 +667,21 @@ class WeatherContainer extends StatelessWidget {
             Colors.white.withOpacity(0.8)));
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        leadingIcon,
-        SizedBox(width: 10),
+        Padding(
+          padding: const EdgeInsets.only(left: 10, top: 2, right: 10),
+          child: leadingIcon,
+        ),
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
+              constraints: BoxConstraints(
+                  maxWidth: (MediaQuery.of(context).size.width - 30) / 3),
               child: Text(
                 displayedData,
                 style: headingStyle,
