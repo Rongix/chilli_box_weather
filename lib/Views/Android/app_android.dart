@@ -15,8 +15,8 @@ import 'package:weatherApp/Constants/translation.dart' as tr;
 import 'package:weatherApp/Models/OpenWeather.dart';
 import 'package:weatherApp/Providers/WeatherProvider.dart';
 import 'package:weatherApp/Utils/utils.dart';
-
-import "dart:math";
+import 'package:weatherApp/widgets/custom_drawer.dart';
+import 'package:weatherApp/widgets/custom_app_bar.dart' as custom;
 
 class AppAndroid extends StatelessWidget {
   @override
@@ -166,72 +166,79 @@ class HomeAndroid extends StatelessWidget {
                     lon: null,
                     locale: Localizations.localeOf(context));
           },
-          child: Stack(children: [
-            CustomScrollView(
-              physics: AlwaysScrollableScrollPhysics(
-                  parent: BouncingScrollPhysics()),
-              slivers: [
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: SliverPersistentPadding(
-                      maxExtent: InfinityUi.statusBarHeight,
-                      minExtent: InfinityUi.statusBarHeight,
-                      beginColor: Theme.of(context).canvasColor,
-                      endColor: Theme.of(context).canvasColor),
-                ),
-                SliverAppBar(
-                  title: Consumer<WeatherProvider>(
-                    builder: (context, provider, child) => Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            //Converting icon to text
-                            Text(
-                              String.fromCharCode(MdiIcons.mapCheck.codePoint),
-                              style: TextStyle(
-                                  fontFamily: MdiIcons.mapCheck.fontFamily,
-                                  package: MdiIcons.mapCheck.fontPackage),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                                provider.available
-                                    ? "${provider?.placemarks?.first?.subAdministrativeArea}"
-                                    : "404",
-                                style: locationStyle),
-                          ],
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 4),
-                          child: Text(
-                            provider.available
-                                ? "${provider?.placemarks?.first?.isoCountryCode} | ${provider?.placemarks?.first?.administrativeArea} | ${provider?.placemarks?.first?.postalCode}"
-                                : "404",
-                            style: descriptionStyle,
-                          ),
-                        ),
-                      ],
-                    ),
+          child: CustomScrollView(
+            physics:
+                AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            slivers: [
+              custom.SliverAppBar(
+                bottom: PreferredSize(
+                  preferredSize: null,
+                  child: Divider(
+                    color: Colors.white.withOpacity(0.4),
+                    height: 0,
+                    thickness: 0.5,
                   ),
-                  backgroundColor: Theme.of(context).canvasColor,
-                  floating: false,
-                  pinned: true,
                 ),
-
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                      (context, index) => widgetList[index],
-                      childCount: widgetList.length),
+                elevation: 0,
+                title: Consumer<WeatherProvider>(
+                  builder: (context, provider, child) => Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          //Converting icon to text
+                          Text(
+                            String.fromCharCode(MdiIcons.mapCheck.codePoint),
+                            style: TextStyle(
+                                fontFamily: MdiIcons.mapCheck.fontFamily,
+                                package: MdiIcons.mapCheck.fontPackage),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                              provider.available
+                                  ? "${provider?.placemarks?.first?.subAdministrativeArea}"
+                                  : "404",
+                              style: locationStyle),
+                        ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 4),
+                        child: Text(
+                          provider.available
+                              ? "${provider?.placemarks?.first?.isoCountryCode} | ${provider?.placemarks?.first?.administrativeArea} | ${provider?.placemarks?.first?.postalCode}"
+                              : "404",
+                          style: descriptionStyle,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                // WeatherGrid(),
+                backgroundColor: Theme.of(context).canvasColor,
+                floating: false,
+                pinned: true,
+              ),
 
-                //Hide bottom overlay
-              ],
-            ),
-          ]),
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: SliverPersistentPadding(
+                    maxExtent: InfinityUi.statusBarHeight,
+                    minExtent: InfinityUi.statusBarHeight,
+                    beginColor: Colors.transparent,
+                    endColor: Colors.transparent),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                    (context, index) => widgetList[index],
+                    childCount: widgetList.length),
+              ),
+              // WeatherGrid(),
+
+              //Hide bottom overlay
+            ],
+          ),
         ));
   }
 }
@@ -246,120 +253,130 @@ class DrawerAndroid extends StatelessWidget {
         background: Theme.of(context).canvasColor,
         textTheme: Theme.of(context).textTheme);
 
-    return Drawer(
-      child: Material(
-        color: Theme.of(context).backgroundColor,
-        child: ListView(
-          physics:
-              AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-          padding: EdgeInsets.only(top: InfinityUi.statusBarHeight + 20),
-          children: [
-            ListTile(
-              title: RichText(
-                  text: TextSpan(style: styleStore.headline1, children: [
-                TextSpan(text: "Weather "),
-                TextSpan(
-                  text: "Chilli Box",
-                  style: styleStore.headline1.copyWith(
-                    color: Colors.yellow[400],
-                  ),
-                ),
-                TextSpan(
-                    text:
-                        "\n\"If you are a chilli pepper, every day is hella hot\"",
-                    style: styleStore.caption),
-              ])),
-              trailing: Padding(
-                padding: const EdgeInsets.only(bottom: 5.0),
-                child: IconButton(
-                  icon: Icon(
-                    MdiIcons.cogs,
-                    color: styleStore.icon,
-                    size: 30,
-                  ),
-                  onPressed: () {},
-                ),
-              ),
-            ),
-
-            SizedBox(
-              height: 10,
-            ),
-            DottedLine(
-              direction: Axis.horizontal,
-              lineThickness: 2,
-              dashLength: 2,
-              dashColor: styleStore.divider,
-            ),
-            SizedBox(height: 5),
-            // Current location section
-            ListTile(
-              dense: true,
-              title: Text(
-                tr.Translations.of(context).currentLocation,
-                style: styleStore.headline5,
-              ),
-              subtitle: Text(
-                tr.Translations.of(context).currentLocationDescription,
-                style: styleStore.caption,
-              ),
-            ),
-            // Location Tile
-            Consumer<WeatherProvider>(
-              builder: (context, provider, child) => ListTile(
-                  dense: true,
-                  onTap: () {},
-                  title: Text(
-                    provider.available
-                        ? "${provider?.placemarks?.first?.subAdministrativeArea}"
-                        : "404",
-                    style: styleStore.headline6,
-                  ),
-                  subtitle: Text(
-                    provider.available
-                        ? "${provider?.placemarks?.first?.isoCountryCode} | ${provider?.placemarks?.first?.administrativeArea} | ${provider?.placemarks?.first?.postalCode}"
-                        : "404",
-                    style: styleStore.caption,
-                  ),
-                  trailing: IconButton(
-                    onPressed: () {
-                      provider.useGeolocation = !provider.useGeolocation;
-                    },
-                    icon: Icon(
-                      provider.useGeolocation
-                          ? MdiIcons.mapMarker
-                          : MdiIcons.mapMarkerOff,
-                      color: styleStore.icon.withOpacity(0.5),
+    return CustomDrawer(
+      child: Stack(
+        children: [
+          ListView(
+            physics:
+                AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            padding: EdgeInsets.only(top: InfinityUi.statusBarHeight + 20),
+            children: [
+              ListTile(
+                title: RichText(
+                    text: TextSpan(style: styleStore.headline1, children: [
+                  TextSpan(text: "Weather "),
+                  TextSpan(
+                    text: "Chilli Box",
+                    style: styleStore.headline1.copyWith(
+                      color: Colors.yellow[400],
                     ),
                   ),
-                  leading: Checkbox(
-                    activeColor: Theme.of(context).accentColor,
-                    checkColor: styleStore.icon,
-                    onChanged: (bool value) {},
-                    value: true,
-                  )),
-            ),
-            DottedLine(
-              direction: Axis.horizontal,
-              lineThickness: 2,
-              dashLength: 2,
-              dashColor: styleStore.divider,
-            ),
-            SizedBox(height: 5),
-            // Saved places section
-            ListTile(
-              dense: true,
-              title: Text(
-                tr.Translations.of(context).savedLocations,
-                style: styleStore.headline5,
+                  TextSpan(
+                      text:
+                          "\n\"If you are a chilli pepper, every day is hella hot\"",
+                      style: styleStore.caption),
+                ])),
+                trailing: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: IconButton(
+                    icon: Icon(
+                      MdiIcons.cogs,
+                      color: styleStore.icon,
+                      size: 30,
+                    ),
+                    onPressed: () {},
+                  ),
+                ),
               ),
-              subtitle: Text(
-                tr.Translations.of(context).savedLocationsDescription,
-                style: styleStore.caption,
+
+              SizedBox(
+                height: 10,
+              ),
+              DottedLine(
+                direction: Axis.horizontal,
+                lineThickness: 2,
+                dashLength: 2,
+                dashColor: styleStore.divider,
+              ),
+              SizedBox(height: 5),
+              // Current location section
+              ListTile(
+                dense: true,
+                title: Text(
+                  tr.Translations.of(context).currentLocation,
+                  style: styleStore.headline5,
+                ),
+                subtitle: Text(
+                  tr.Translations.of(context).currentLocationDescription,
+                  style: styleStore.caption,
+                ),
+              ),
+              // Location Tile
+              Consumer<WeatherProvider>(
+                builder: (context, provider, child) => ListTile(
+                    dense: true,
+                    onTap: () {},
+                    title: Text(
+                      provider.available
+                          ? "${provider?.placemarks?.first?.subAdministrativeArea}"
+                          : "404",
+                      style: styleStore.headline6,
+                    ),
+                    subtitle: Text(
+                      provider.available
+                          ? "${provider?.placemarks?.first?.isoCountryCode} | ${provider?.placemarks?.first?.administrativeArea} | ${provider?.placemarks?.first?.postalCode}"
+                          : "404",
+                      style: styleStore.caption,
+                    ),
+                    trailing: IconButton(
+                      onPressed: () {
+                        provider.useGeolocation = !provider.useGeolocation;
+                      },
+                      icon: Icon(
+                        provider.useGeolocation
+                            ? MdiIcons.mapMarker
+                            : MdiIcons.mapMarkerOff,
+                        color: styleStore.icon.withOpacity(0.5),
+                      ),
+                    ),
+                    leading: Checkbox(
+                      activeColor: Theme.of(context).accentColor,
+                      checkColor: styleStore.icon,
+                      onChanged: (bool value) {},
+                      value: true,
+                    )),
+              ),
+              DottedLine(
+                direction: Axis.horizontal,
+                lineThickness: 2,
+                dashLength: 2,
+                dashColor: styleStore.divider,
+              ),
+              SizedBox(height: 5),
+              // Saved places section
+              ListTile(
+                dense: true,
+                title: Text(
+                  tr.Translations.of(context).savedLocations,
+                  style: styleStore.headline5,
+                ),
+                subtitle: Text(
+                  tr.Translations.of(context).savedLocationsDescription,
+                  style: styleStore.caption,
+                ),
+              ),
+            ],
+          ),
+          Container(
+            height: InfinityUi.statusBarHeight,
+            child: ClipRRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                child: Container(color: Colors.transparent),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

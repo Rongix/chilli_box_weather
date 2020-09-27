@@ -62,7 +62,9 @@ OpenWeatherOneCallCurrent _$OpenWeatherOneCallCurrentFromJson(
     windSpeed: (json['wind_speed'] as num)?.toDouble(),
     windDeg: json['wind_deg'] as int,
     windGust: (json['wind_gust'] as num)?.toDouble(),
-    rain: (json['rain'] as num)?.toDouble(),
+    rain: (json['rain'] as Map<String, dynamic>)?.map(
+      (k, e) => MapEntry(k, (e as num)?.toDouble()),
+    ),
     snow: (json['snow'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(k, (e as num)?.toDouble()),
     ),
@@ -116,7 +118,7 @@ Map<String, dynamic> _$OneCallWeatherToJson(OneCallWeather instance) =>
 OneCallMinutely _$OneCallMinutelyFromJson(Map<String, dynamic> json) {
   return OneCallMinutely(
     dt: json['dt'] as int,
-    precipitation: json['precipitation'] as int,
+    precipitation: (json['precipitation'] as num)?.toDouble(),
   );
 }
 

@@ -175,7 +175,7 @@ class OpenWeatherOneCallCurrent {
   @JsonKey(name: 'wind_gust')
   final double windGust;
   // Precipitation volume, mm
-  final double rain;
+  final Map<String, double> rain;
   // Snow volume, mm
   final Map<String, double> snow;
   final List<OneCallWeather> weather;
@@ -223,7 +223,7 @@ class OneCallWeather {
 @JsonSerializable()
 class OneCallMinutely {
   final int dt;
-  final int precipitation;
+  final double precipitation;
 
   OneCallMinutely({this.dt, this.precipitation});
 
