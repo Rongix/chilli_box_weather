@@ -13,7 +13,7 @@ import 'package:weatherApp/Constants/colors.dart';
 
 import 'package:weatherApp/Constants/translation.dart' as tr;
 import 'package:weatherApp/Models/OpenWeather.dart';
-import 'package:weatherApp/Providers/WeatherProvider.dart';
+import 'package:weatherApp/Providers/weatherProvider.dart';
 import 'package:weatherApp/Utils/utils.dart';
 import 'package:weatherApp/widgets/custom_drawer.dart';
 import 'package:weatherApp/widgets/custom_app_bar.dart' as custom;
@@ -30,7 +30,7 @@ class AppAndroid extends StatelessWidget {
           brightness: Brightness.light,
           accentColorBrightness: Brightness.light,
           accentColor: Colors.lightBlue[300],
-          backgroundColor: Color(0xFF5DACFA),
+          backgroundColor: Colors.blue[600],
           canvasColor: Color(0xFF5DACFA),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
