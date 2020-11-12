@@ -1,4 +1,4 @@
-# ChilliBox weather
+# Chilli Box Weather
 
 ### Weather test app, using current location to display 'accurate' weather from open weather map. 
 #### Some things I tried you may want to check out:
