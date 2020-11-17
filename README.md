@@ -6,6 +6,8 @@
 * Custom translation unit,
 * Fullscreen views 
 
+[![YouTube video here](https://img.youtube.com/vi/5Y8EhbW8EmE/hqdefault.jpg)](https://www.youtube.com/watch?v=4PoyNqiLfko "YouTube video here")
+
 #### This app is not ready and some things are missing like:
 Caching, overview section, dragging sections around, settings and license page.
 
